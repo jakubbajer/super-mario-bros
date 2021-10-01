@@ -1,0 +1,26 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100vw;
+  min-height: 100vh;
+  background-color: #000000;
+}
+
+.pageWrapper {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  #game {
+    $size: 80px;
+    height: 7 * $size;
+    width: 8 * $size;
+    outline: 1px solid red;
+  }
+}
