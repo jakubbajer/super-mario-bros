@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# hey balz
-=======
-# hey balz
->>>>>>> aec2d3f8c877cc606b5640b7f45238f835b23684
+# Super Mario Bros.
+
+This is a school project in TypeScript
+The goal is to remake the original Super Mario Bros.
