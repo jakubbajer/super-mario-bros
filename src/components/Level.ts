@@ -8,10 +8,8 @@ class Level {
   canvas: HTMLCanvasElement;
   player: Player;
   controls: Controls;
-  renderer: Renderer;
 
-  constructor(levelId: number, canvas: HTMLCanvasElement, renderer: Renderer) {
-    this.renderer = renderer;
+  constructor(levelId: number, canvas: HTMLCanvasElement) {
     this.levelId = levelId;
     this.canvas = canvas;
     this.context = canvas.getContext("2d")!;

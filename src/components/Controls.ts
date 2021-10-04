@@ -17,12 +17,12 @@ class Controls {
         break;
 
       case "ArrowLeft":
+        this.player.walkAccelerate(false);
         break;
 
       case "ArrowRight":
-
+        this.player.walkAccelerate(true);
         break;
-
     }
   }
 }

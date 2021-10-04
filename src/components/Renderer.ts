@@ -5,9 +5,9 @@ class Renderer {
     this.canvas = canvas;
   }
 
-  render = () => {
-    window.requestAnimationFrame(this.render);
-  };
+  // render = () => {
+  //   window.requestAnimationFrame(this.render);
+  // };
 }
 
 export default Renderer;
