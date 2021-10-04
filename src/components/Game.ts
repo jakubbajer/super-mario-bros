@@ -20,8 +20,8 @@ class Game {
   }
 
   init() {
-    this.level = new Level(1, this.canvas);
-    this.audioPlayer.playAudio(theme, true);
+    this.level = new Level(1, this.canvas, this.renderer);
+    // this.audioPlayer.playAudio(theme, true);
   }
 }
 

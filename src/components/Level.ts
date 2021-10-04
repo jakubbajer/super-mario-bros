@@ -1,24 +1,23 @@
-import world1_1 from "../../assets/sprites/world1-1.png";
-import Camera from "./Camera";
 import Controls from "./Controls";
 import Player from "./Player";
+import Renderer from "./Renderer";
 
 class Level {
   levelId: number;
-  camera: Camera;
   context: CanvasRenderingContext2D;
   canvas: HTMLCanvasElement;
   player: Player;
   controls: Controls;
+  renderer: Renderer;
 
-  constructor(levelId: number, canvas: HTMLCanvasElement) {
+  constructor(levelId: number, canvas: HTMLCanvasElement, renderer: Renderer) {
+    this.renderer = renderer;
     this.levelId = levelId;
     this.canvas = canvas;
     this.context = canvas.getContext("2d")!;
-    this.camera = new Camera(this.context, world1_1);
-    this.camera.updateCamera(0);
-    this.player = new Player();
-    this.controls = new Controls(this.player, this.camera);
+    this.player = new Player(this.context);
+    this.controls = new Controls(this.player);
+    this.player.update();
   }
 }
 

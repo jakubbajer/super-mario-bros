@@ -6,8 +6,6 @@ class Renderer {
   }
 
   render = () => {
-    // console.log("rendering");
-
     window.requestAnimationFrame(this.render);
   };
 }
