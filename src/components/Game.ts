@@ -1,21 +1,27 @@
+import AudioPlayer from "./AudioPlayer";
+import Controls from "./Controls";
 import Level from "./Level";
+import Player from "./Player";
 import Renderer from "./Renderer";
+import theme from "../../assets/sounds/theme.mp3";
 
 class Game {
-  container: HTMLCanvasElement;
+  canvas: HTMLCanvasElement;
   renderer: Renderer;
   level: Level | undefined;
+  audioPlayer: AudioPlayer;
 
-  constructor(container: HTMLCanvasElement) {
-    this.container = container;
-    this.renderer = new Renderer(container);
+  constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
+    this.renderer = new Renderer(canvas);
     this.renderer.render();
+    this.audioPlayer = new AudioPlayer();
     this.init();
   }
 
   init() {
-    this.level = new Level(1);
-    this.level.start(this.container);
+    this.level = new Level(1, this.canvas);
+    this.audioPlayer.playAudio(theme, true);
   }
 }
 
