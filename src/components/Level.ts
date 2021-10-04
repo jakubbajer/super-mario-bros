@@ -1,6 +1,5 @@
 import Controls from "./Controls";
 import Player from "./Player";
-import Renderer from "./Renderer";
 
 class Level {
   levelId: number;
@@ -15,7 +14,6 @@ class Level {
     this.context = canvas.getContext("2d")!;
     this.player = new Player(this.context);
     this.controls = new Controls(this.player);
-    this.player.update();
   }
 }
 
