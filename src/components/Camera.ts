@@ -1,18 +1,17 @@
 class Camera {
   context: CanvasRenderingContext2D;
+  imageSrc: any;
   image: any;
 
-  constructor(ctx: CanvasRenderingContext2D, image: any) {
+  constructor(ctx: CanvasRenderingContext2D, imageSrc: any) {
     this.context = ctx;
-    this.image = image;
+    this.imageSrc = imageSrc;
   };
 
   updateCamera(position: number) {
-    let image = new Image();
-    image.src = this.image;
-    image.onload = () => {
-      this.context.drawImage(image, -position, 0, 3376, 480);
-    };
+    this.image = new Image();
+    this.image.src = this.imageSrc;
+    this.context.drawImage(this.image, -position, 0, 3376, 480);
   }
 }
 

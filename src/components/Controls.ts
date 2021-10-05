@@ -72,6 +72,8 @@ class Controls {
         this.player.walkAccelerate(false);
       if (this.flags.arrowRight)
         this.player.walkAccelerate(true);
+      if (!(this.flags.arrowLeft || this.flags.arrowRight))
+        this.player.decelerate();
     }
     this.counter = (this.counter + 1) % 4;
   }
