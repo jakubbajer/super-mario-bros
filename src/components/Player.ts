@@ -34,11 +34,15 @@ class Player {
     this.controls = new Controls(this);
   }
 
+  // TODO: rework the positioning and camera positioning system
   update() {
-    this.positionX += this.velocityX;
+    if (this.positionX + this.velocityX < this.minPositionX)
+      this.positionX = this.minPositionX;
+    else
+      this.positionX += this.velocityX;
     this.setMinMaxPositions();
 
-    this.draw(this.positionX - this.minPositionX, this.positionY);
+    this.draw(this.positionX - this.minPositionX + 0x04000 / 0x100, this.positionY);
   }
 
   draw(x: number, y: number) {
@@ -80,11 +84,10 @@ class Player {
   }
 
   setMinMaxPositions() {
-    this.minPositionX = this.positionX - 0x04000 / 0x100;
+    this.minPositionX = this.positionX;
     if (this.minPositionX < 0)
       this.minPositionX = 0;
     console.log(this.minPositionX);
-
   }
 }
 
