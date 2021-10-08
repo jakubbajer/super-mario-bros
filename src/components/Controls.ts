@@ -12,7 +12,8 @@ class Controls {
       arrowRight: false,
       arrowLeft: false,
       arrowUp: false,
-      arrowDown: false
+      arrowDown: false,
+      shift: false
     };
     window.addEventListener("keydown", e => this.handleDown(e));
     window.addEventListener("keyup", e => this.handleUp(e));
@@ -20,6 +21,10 @@ class Controls {
 
   handleDown(event: KeyboardEvent) {
     switch (event.key) {
+      case "Shift":
+        this.flags.shift = true;
+        break;
+
       case "ArrowUp":
         this.flags.arrowUp = true;
         break;
@@ -40,6 +45,10 @@ class Controls {
 
   handleUp(event: KeyboardEvent) {
     switch (event.key) {
+      case "Shift":
+        this.flags.shift = false;
+        break;
+
       case "ArrowUp":
         this.flags.arrowUp = false;
         break;
@@ -69,9 +78,9 @@ class Controls {
         //
       }
       if (this.flags.arrowLeft)
-        this.player.walkAccelerate(false);
+        this.player.accelerate(false, this.flags.shift);
       if (this.flags.arrowRight)
-        this.player.walkAccelerate(true);
+        this.player.accelerate(true, this.flags.shift);
       if (!(this.flags.arrowLeft || this.flags.arrowRight))
         this.player.decelerate();
     }

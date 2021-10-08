@@ -23,7 +23,7 @@ class Game {
   }
 
   // executed as a callback of fpsControler loop (once a second)
-  // updates the game
+  // the 'game clock', updates the game
   // namely: player position, camera, enemies, triggers
   update = () => {
     this.level.player.controls.executeFlags(); // triggers input

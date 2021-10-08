@@ -6,6 +6,9 @@
 // max running speed - 02900
 // release deceleration - 000D0
 // skidding deceleration - 0001A
+// max walk velocity (underewater) - 01100
+// max walk velocity (level entry) - 00D00
+// skid turnaround speed - 00900
 
 import world1_1 from "../../assets/sprites/world1-1-bg.png";
 import Camera from "./Camera";
@@ -57,21 +60,22 @@ class Player {
     this.context.stroke();
   }
 
-  walkAccelerate(right: boolean) {
+  // TODO: make accelerating with shift running
+  accelerate(right: boolean, run: boolean) {
     if (right) {
       if (this.velocityX < 0x00130 / 0x100)
         this.velocityX = 0x00130 / 0x100;
       else
         this.velocityX += 0x00098 / 0x100;
-      if (this.velocityX >= 0x00290 / 0x100)
-        this.velocityX = 0x00290 / 0x100;
+      if (this.velocityX >= 0x00190 / 0x100)
+        this.velocityX = 0x00190 / 0x100;
     } else {
       if (this.velocityX > -0x00130 / 0x100)
         this.velocityX = -0x00130 / 0x100;
       else
         this.velocityX -= 0x00098 / 0x100;
-      if (this.velocityX <= -0x00290 / 0x100)
-        this.velocityX = -0x00290 / 0x100;
+      if (this.velocityX <= -0x00190 / 0x100)
+        this.velocityX = -0x00190 / 0x100;
     }
   }
 
