@@ -13,6 +13,7 @@
 import world1_1 from "../../assets/sprites/world1-1-bg.png";
 import Camera from "./Camera";
 import Controls from "./Controls";
+import Textures from "./Textures";
 
 class Player {
   positionX: number;
@@ -22,6 +23,7 @@ class Player {
   camera: Camera;
   context: CanvasRenderingContext2D;
   controls: Controls;
+  animationCounter: number;
 
   constructor(context: CanvasRenderingContext2D) {
     this.positionX = 0x03000 / 0x100;
@@ -31,6 +33,7 @@ class Player {
     this.context = context;
     this.camera = new Camera(this.context, world1_1);
     this.controls = new Controls(this);
+    this.animationCounter = 1;
   }
 
   update() {
@@ -44,14 +47,13 @@ class Player {
     if (this.positionX < this.camera.position)
       this.positionX = this.camera.position;
 
-    this.draw(this.positionX - this.camera.position, this.positionY);
+    this.renderMario(this.positionX - this.camera.position, this.positionY);
   }
 
-  draw(x: number, y: number) {
-    this.context.beginPath();
-    this.context.fillStyle = "#ff0000";
-    this.context.fillRect(x, y + 0xB000 / 0x100, 16, 32);
-    this.context.stroke();
+  renderMario(x: number, y: number) {
+    let texture: "running" | "standing" | "dying" | "jumping" = (this.velocityX != 0) ? "running" : "standing";
+    this.camera.drawSprite(...Textures.getMario(texture, Math.floor(this.animationCounter / 6) + 1), x, y + 0x0C000 / 0x100, 16, 16, this.velocityX < 0);
+    this.animationCounter = (this.animationCounter + 1) % 18 + 1;
   }
 
   accelerate(right: boolean, run: boolean) {

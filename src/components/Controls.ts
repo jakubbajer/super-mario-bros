@@ -77,10 +77,10 @@ class Controls {
       if (this.flags.arrowDown) {
         //
       }
-      if (this.flags.arrowLeft)
-        this.player.accelerate(false, this.flags.shift);
       if (this.flags.arrowRight)
         this.player.accelerate(true, this.flags.shift);
+      else if (this.flags.arrowLeft)
+        this.player.accelerate(false, this.flags.shift);
       if (!(this.flags.arrowLeft || this.flags.arrowRight))
         this.player.decelerate();
     }

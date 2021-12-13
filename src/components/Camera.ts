@@ -1,22 +1,37 @@
+import mario from "../../assets/sprites/mario.png";
+
 class Camera {
   context: CanvasRenderingContext2D;
   imageSrc: string;
-  image: HTMLImageElement;
+  background: HTMLImageElement;
+  mario: HTMLImageElement;
   position: number;
 
   constructor(ctx: CanvasRenderingContext2D, imageSrc: string) {
     this.position = 0;
     this.context = ctx;
     this.imageSrc = imageSrc;
-    this.image = new Image();
-    this.image.src = this.imageSrc;
-    this.image.onload = () => this.context.drawImage(this.image, 0, 0, 3376, 480);
+    this.background = new Image();
+    this.background.src = this.imageSrc;
+    this.background.onload = () => this.context.drawImage(this.background, 0, 0, 3376, 480);
+    this.mario = new Image();
+    this.mario.src = mario;
   };
 
   updateCamera(velocity: number) {
     if (velocity > 0)
       this.position += velocity;
-    this.context.drawImage(this.image, -this.position, 0, 3376, 480);
+    this.context.drawImage(this.background, -this.position, 0, 3376, 480);
+  }
+
+  drawSprite(sx: number, sy: number, sWidth: number, sHeight: number, dx: number, dy: number, dWidth: number, dHeight: number, mirrored: boolean) {
+    if (mirrored) {
+      this.context.save();
+      this.context.scale(-1, 1);
+      this.context.drawImage(this.mario, sx, sy, sWidth, sHeight, -dx - 16, dy, dWidth, dHeight);
+      this.context.restore();
+    } else
+      this.context.drawImage(this.mario, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
   }
 }
 
