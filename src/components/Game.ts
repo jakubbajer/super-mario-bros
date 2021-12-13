@@ -27,7 +27,7 @@ class Game {
   // namely: player position, camera, enemies, triggers
   update = () => {
     this.level.player.controls.executeFlags(); // triggers input
-    this.level.player.update(); // updates player and camera
+    this.level.updatePlayer(); // updates player and camera
   };
 }
 
