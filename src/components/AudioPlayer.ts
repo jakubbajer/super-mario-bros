@@ -1,5 +1,5 @@
 class AudioPlayer {
-  playAudio(audioPath: any, repeatable?: true) {
+  static playAudio(audioPath: any, repeatable?: true) {
     const audio = new Audio(audioPath);
     audio.volume = 0.3;
     audio.play();

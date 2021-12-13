@@ -20,15 +20,13 @@ class Player {
   context: CanvasRenderingContext2D;
   controls: Controls;
   animationCounter: number;
-  obstacles: any;
 
-  constructor(context: CanvasRenderingContext2D, obstacles: any) {
+  constructor(context: CanvasRenderingContext2D) {
     this.positionX = 0x03000 / 0x100;
     this.velocityX = 0x0;
     this.positionY = 0x0;
     this.velocityY = 0x0;
     this.context = context;
-    this.obstacles = obstacles;
     this.controls = new Controls(this);
     this.animationCounter = 1;
   }

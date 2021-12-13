@@ -13,7 +13,8 @@ module.exports = {
             filename: './index.html',
             title: "Super Mario Bros.",
             template: './src/index.html',
-            chunks: ['index']
+            chunks: ['index'],
+            favicon: "./favicon.png"
         }),
     ],
     module: {

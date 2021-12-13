@@ -1,7 +1,8 @@
-type marioTextureType = "standing" | "running" | "jumping" | "dying";
+type marioTexture = "standing" | "running" | "jumping" | "dying";
+type blockTexture = "Block" | "Brick" | "Stone" | "Floor" | "Pipe";
 
 class Textures {
-  static getMario(type: marioTextureType, frame?: number): [number, number, number, number] {
+  static getMario(type: marioTexture, frame?: number): [number, number, number, number] {
     switch (type) {
       case "standing":
         return [1, 9, 16, 16];
@@ -12,6 +13,29 @@ class Textures {
         return [119, 9, 16, 16];
       case "dying":
         return [22, 9, 16, 16];
+    }
+  }
+
+  static getBlocks(type: blockTexture, pipeTop?: boolean, pipeLeft?: boolean): [number, number] {
+    switch (type) {
+      case "Block":
+        return [298, 78];
+      case "Brick":
+        return [17, 16];
+      case "Floor":
+        return [0, 16];
+      case "Stone":
+        return [0, 33];
+      case "Pipe":
+        if (pipeLeft)
+          if (pipeTop) return [119, 196];
+          else return [119, 213];
+        else
+          if (pipeTop) return [136, 196];
+          else return [136, 213];
+
+      default:
+        return [366, 16];
     }
   }
 }
