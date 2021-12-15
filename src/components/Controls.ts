@@ -20,6 +20,7 @@ class Controls {
 
   handleDown(event: KeyboardEvent) {
     switch (event.key) {
+      case "ArrowUp":
       case " ":
       case "Spacebar":
         this.flags.space = true;
@@ -41,6 +42,7 @@ class Controls {
 
   handleUp(event: KeyboardEvent) {
     switch (event.key) {
+      case "ArrowUp":
       case " ":
       case "Spacebar":
         this.flags.space = false;

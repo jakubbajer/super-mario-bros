@@ -103,6 +103,18 @@ class Player {
 
     return grounded;
   }
+
+  isInBlock(): { isIn: boolean, correction?: { x: number, y: number; }; } {
+    // exact left side of mario in blocks
+    const x1 = this.positionX / 16;
+    // exact right side of mario in block
+    const x2 = (this.positionX + 0x01000) / 16;
+
+    // mario's y coordinate in blocks
+    const y = (this.positionY) / 16;
+
+    return { isIn: false };
+  }
 }
 
 export default Player;
