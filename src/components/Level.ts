@@ -32,9 +32,9 @@ class Level {
     if (this.camera.position + 0x03000 / 0x100 > this.player.positionX)
       this.camera.updateCamera(0);
     else if (this.camera.position + 0x07000 / 0x100 > this.player.positionX)
-      this.camera.updateCamera(this.player.velocityX / 2);
+      this.camera.updateCamera(this.player.speedX / 2);
     else
-      this.camera.updateCamera(this.player.velocityX);
+      this.camera.updateCamera(this.player.speedX);
   }
 
   renderBlocks() {
@@ -53,14 +53,24 @@ class Level {
     if (!this.player.grounded)
       texture = "jumping";
     else
-      texture = (this.player.velocityX != 0) ? "running" : "standing";
+      texture = (this.player.speedX != 0) ? "running" : "standing";
     this.camera.drawSprite(...Textures.getMario(texture, Math.floor(this.player.animationCounter / 6) + 1), x, y, 16, 16, this.player.facing === "left");
     this.player.animationCounter = (this.player.animationCounter + 1) % 18 + 1;
   }
 
   updatePlayer() {
     // update player position
-    this.player.positionX += this.player.velocityX;
+    this.player.positionX += this.player.speedX;
+    this.player.positionY += this.player.speedY;
+
+    this.player.gravity(this.player.controls.flags.space);
+
+    if (this.player.positionY <= 0x02000 / 0x100) {
+      this.player.speedY = 0x0;
+      this.player.positionY = 0x02000 / 0x100;
+      this.player.grounded = true;
+    }
+
     if (this.player.positionX < this.camera.position)
       this.player.positionX = this.camera.position;
 
@@ -68,7 +78,7 @@ class Level {
     this.player.grounded = this.player.isGrounded(this.levelData.blocks);
     const result = this.player.isInBlock(this.levelData.blocks);
     if (result.isIn) {
-      console.log(this.player.positionX, this.player.positionX += result.correction!.x);
+      console.log(this.player.positionX, result.correction!.x, this.player.positionX + result.correction!.x);
       this.player.positionX += result.correction!.x;
       this.player.positionY += result.correction!.y;
       this.camera.updateCamera(0);

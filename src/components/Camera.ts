@@ -20,10 +20,10 @@ class Camera {
     this.background.src = background;
   };
 
-  updateCamera(velocity: number) {
+  updateCamera(speed: number) {
     this.context.clearRect(0, 0, 3376, 480);
-    if (velocity > 0)
-      this.position += velocity;
+    if (speed > 0)
+      this.position += speed;
     this.context.fillStyle = "#9494ff";
     this.context.fillRect(0, 0, 3376, 480);
     this.context.drawImage(this.background, Math.round(-this.position), 0);

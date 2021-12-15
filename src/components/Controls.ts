@@ -76,7 +76,11 @@ class Controls {
       }
       if (!(this.flags.arrowLeft || this.flags.arrowRight))
         this.player.decelerate();
+      if (this.flags.space && this.player.grounded) {
+        this.player.jump();
+      }
     }
+
     this.counter = (this.counter + 1) % 3 + 1;
   }
 }
