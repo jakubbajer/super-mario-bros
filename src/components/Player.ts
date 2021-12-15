@@ -17,6 +17,8 @@ class Player {
   velocityX: number;
   positionY: number;
   velocityY: number;
+  grounded: boolean;
+  facing: "left" | "right";
   controls: Controls;
   animationCounter: number;
 
@@ -25,8 +27,10 @@ class Player {
     this.velocityX = 0x0;
     this.positionY = 0x02000 / 0x100;
     this.velocityY = 0x0;
+    this.grounded = true;
     this.controls = new Controls(this);
     this.animationCounter = 1;
+    this.facing = "right";
   }
 
   accelerate(right: boolean, run: boolean) {
@@ -84,14 +88,18 @@ class Player {
   }
 
   isGrounded(obstacles: Array<any>): boolean {
+    // left side of mario
     const x1 = Math.floor(this.positionX / 16);
+    // right side of mario
     const x2 = Math.floor(this.positionX / 16) + 1;
-    const y = Math.floor(this.positionY / 16);
-    // console.log("x1:", x1, "x2", x2, "y:", y);
 
-    obstacles = obstacles.filter((block: any) => (block.x == x1 || block.x == x2) && block.y == y - 1);
-    const grounded = (obstacles.length > 0) ? true : false;
-    console.log(grounded);
+    // mario's y coordinate in blocks - 1 pixel (1/16 of a block)
+    const y = (this.positionY - (0x00100 / 0x100)) / 16;
+
+    obstacles = obstacles.filter((block: any) => (block.x == x1 || block.x == x2) && block.y == Math.floor(y));
+    let grounded = (obstacles.length > 0) ? true : false;
+    // console.log(grounded);
+    // console.info("x1:", x1, "x2", x2, "exact y:", y, "y of block to check:", Math.floor(y), "grounded:", grounded);
 
     return grounded;
   }

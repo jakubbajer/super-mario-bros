@@ -64,14 +64,18 @@ class Controls {
   // which is about the speed NES handles input
   executeFlags() {
     if (this.counter == 3) {
-      if (this.flags.arrowRight && !(this.flags.arrowRight && this.flags.arrowLeft))
+      if (this.flags.arrowRight && !(this.flags.arrowRight && this.flags.arrowLeft)) {
+        this.player.facing = "right";
         this.player.accelerate(true, this.flags.shift);
-      else if (this.flags.arrowLeft && !(this.flags.arrowRight && this.flags.arrowLeft))
+      }
+      else if (this.flags.arrowLeft && !(this.flags.arrowRight && this.flags.arrowLeft)) {
+        this.player.facing = "left";
         this.player.accelerate(false, this.flags.shift);
+      }
       if (!(this.flags.arrowLeft || this.flags.arrowRight))
         this.player.decelerate();
     }
-    this.counter = (this.counter + 1) % 4;
+    this.counter = (this.counter + 1) % 3 + 1;
   }
 }
 
