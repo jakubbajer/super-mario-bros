@@ -11,7 +11,6 @@ class Level {
   context: CanvasRenderingContext2D;
   canvas: HTMLCanvasElement;
   player: Player;
-  controls: Controls;
   camera: Camera;
   levelData: any;
   pole: any;
@@ -24,9 +23,8 @@ class Level {
     this.levelId = levelId;
     this.canvas = canvas;
     this.context = canvas.getContext("2d")!;
-    this.player = new Player(this.context);
+    this.player = new Player();
     this.camera = new Camera(this.context);
-    this.controls = new Controls(this.player);
   }
 
   updateCamera() {
@@ -68,6 +66,15 @@ class Level {
 
     // update if player is grounded
     this.player.grounded = this.player.isGrounded(this.levelData.blocks);
+    const result = this.player.isInBlock(this.levelData.blocks);
+    if (result.isIn) {
+      console.log(this.player.positionX, this.player.positionX += result.correction!.x);
+      this.player.positionX += result.correction!.x;
+      this.player.positionY += result.correction!.y;
+      this.camera.updateCamera(0);
+    } else {
+      this.updateCamera();
+    }
 
     this.renderPlayer(this.player.positionX - this.camera.position, 0x0E000 / 0x100 - this.player.positionY);
   }

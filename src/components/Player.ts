@@ -22,7 +22,7 @@ class Player {
   controls: Controls;
   animationCounter: number;
 
-  constructor(context: CanvasRenderingContext2D) {
+  constructor() {
     this.positionX = 0x03000 / 0x100;
     this.velocityX = 0x0;
     this.positionY = 0x02000 / 0x100;
@@ -104,16 +104,21 @@ class Player {
     return grounded;
   }
 
-  isInBlock(): { isIn: boolean, correction?: { x: number, y: number; }; } {
-    // exact left side of mario in blocks
-    const x1 = this.positionX / 16;
-    // exact right side of mario in block
-    const x2 = (this.positionX + 0x01000) / 16;
+  isInBlock(obstacles: Array<any>): { isIn: boolean, correction?: { x: number, y: number; }; } {
+    // exact side (depending on his direction) of mario in blocks
+    const exactX = ((this.velocityX >= 0) ? this.positionX + 0x01000 / 0x100 : this.positionX) / 16;
+    const wholeX = Math.floor(exactX);
+    const remainder: number = exactX % 1;
 
-    // mario's y coordinate in blocks
+    // exact mario's y coordinate in blocks
     const y = (this.positionY) / 16;
 
-    return { isIn: false };
+
+    const [block] = obstacles = obstacles.filter((block: any) => block.x == wholeX && block.y == Math.floor(y));
+    // console.log("whole x:", wholeX, "y:", y, "block:", block);
+
+    if (block) return { isIn: true, correction: { x: ((this.velocityX >= 0) ? -remainder : remainder) * 16, y: 0 } };
+    else return { isIn: false };
   }
 }
 
