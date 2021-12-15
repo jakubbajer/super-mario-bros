@@ -24,6 +24,8 @@ class Camera {
     this.context.clearRect(0, 0, 3376, 480);
     if (velocity > 0)
       this.position += velocity;
+    this.context.fillStyle = "#9494ff";
+    this.context.fillRect(0, 0, 3376, 480);
     this.context.drawImage(this.background, Math.round(-this.position), 0);
   }
 
