@@ -30,6 +30,7 @@ class Level {
   }
 
   updatePlayer() {
+    // update player and Camera
     if (this.camera.position + 0x03000 / 0x100 > this.player.positionX)
       this.camera.updateCamera(0);
     else if (this.camera.position + 0x07000 / 0x100 > this.player.positionX)
@@ -40,23 +41,26 @@ class Level {
     if (this.player.positionX < this.camera.position)
       this.player.positionX = this.camera.position;
 
-    this.renderMario(this.player.positionX - this.camera.position, this.player.positionY);
+    // update if player is grounded
+    this.player.isGrounded(this.levelData.blocks);
+
+    this.renderMario(this.player.positionX - this.camera.position, 0x0E000 / 0x100 - this.player.positionY);
   }
 
   renderBlocks() {
     this.levelData.blocks.forEach((block: any) => {
       if (block.type === "Pipe")
-        this.camera.drawBlock(...Textures.getBlocks(block.type, block.top, block.left), block.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - block.y * 16);
+        this.camera.drawBlock(...Textures.getBlocks(block.type, block.top, block.left), block.x * 16 - Math.floor(this.camera.position), 0x0E000 / 0x100 - block.y * 16);
       else
-        this.camera.drawBlock(...Textures.getBlocks(block.type), block.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - block.y * 16);
+        this.camera.drawBlock(...Textures.getBlocks(block.type), block.x * 16 - Math.floor(this.camera.position), 0x0E000 / 0x100 - block.y * 16);
     });
-    this.camera.drawPole(this.pole.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - this.pole.y * 16);
-    this.camera.drawCastle(this.castle.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - this.castle.y * 16);
+    this.camera.drawPole(this.pole.x * 16 - Math.floor(this.camera.position), 0x0E000 / 0x100 - this.pole.y * 16);
+    this.camera.drawCastle(this.castle.x * 16 - Math.floor(this.camera.position), 0x0E000 / 0x100 - this.castle.y * 16);
   }
 
   renderMario(x: number, y: number) {
     let texture: marioTexture = (this.player.velocityX != 0) ? "running" : "standing";
-    this.camera.drawSprite(...Textures.getMario(texture, Math.floor(this.player.animationCounter / 6) + 1), x, y + 0x0C000 / 0x100, 16, 16, this.player.velocityX < 0);
+    this.camera.drawSprite(...Textures.getMario(texture, Math.floor(this.player.animationCounter / 6) + 1), x, y, 16, 16, this.player.velocityX < 0);
     this.player.animationCounter = (this.player.animationCounter + 1) % 18 + 1;
   }
 }

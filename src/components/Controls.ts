@@ -2,7 +2,7 @@ import Player from "./Player";
 
 class Controls {
   player: Player;
-  flags: any;
+  flags: Flags;
   counter: number;
 
   constructor(player: Player) {
@@ -11,9 +11,8 @@ class Controls {
     this.flags = {
       arrowRight: false,
       arrowLeft: false,
-      arrowUp: false,
-      arrowDown: false,
-      shift: false
+      shift: false,
+      space: false
     };
     window.addEventListener("keydown", e => this.handleDown(e));
     window.addEventListener("keyup", e => this.handleUp(e));
@@ -21,16 +20,13 @@ class Controls {
 
   handleDown(event: KeyboardEvent) {
     switch (event.key) {
+      case " ":
+      case "Spacebar":
+        this.flags.space = true;
+        break;
+
       case "Shift":
         this.flags.shift = true;
-        break;
-
-      case "ArrowUp":
-        this.flags.arrowUp = true;
-        break;
-
-      case "ArrowDown":
-        this.flags.arrowDown = true;
         break;
 
       case "ArrowLeft":
@@ -45,16 +41,13 @@ class Controls {
 
   handleUp(event: KeyboardEvent) {
     switch (event.key) {
+      case " ":
+      case "Spacebar":
+        this.flags.space = false;
+        break;
+
       case "Shift":
         this.flags.shift = false;
-        break;
-
-      case "ArrowUp":
-        this.flags.arrowUp = false;
-        break;
-
-      case "ArrowDown":
-        this.flags.arrowDown = false;
         break;
 
       case "ArrowLeft":
@@ -71,21 +64,22 @@ class Controls {
   // which is about the speed NES handles input
   executeFlags() {
     if (this.counter == 3) {
-      if (this.flags.arrowUp) {
-        // this.player.accelerateUp()
-      }
-      if (this.flags.arrowDown) {
-        //
-      }
-      if (this.flags.arrowRight)
+      if (this.flags.arrowRight && !(this.flags.arrowRight && this.flags.arrowLeft))
         this.player.accelerate(true, this.flags.shift);
-      else if (this.flags.arrowLeft)
+      else if (this.flags.arrowLeft && !(this.flags.arrowRight && this.flags.arrowLeft))
         this.player.accelerate(false, this.flags.shift);
       if (!(this.flags.arrowLeft || this.flags.arrowRight))
         this.player.decelerate();
     }
     this.counter = (this.counter + 1) % 4;
   }
+}
+
+interface Flags {
+  arrowRight: boolean;
+  arrowLeft: boolean;
+  shift: boolean;
+  space: boolean;
 }
 
 export default Controls;

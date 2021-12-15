@@ -17,16 +17,14 @@ class Player {
   velocityX: number;
   positionY: number;
   velocityY: number;
-  context: CanvasRenderingContext2D;
   controls: Controls;
   animationCounter: number;
 
   constructor(context: CanvasRenderingContext2D) {
     this.positionX = 0x03000 / 0x100;
     this.velocityX = 0x0;
-    this.positionY = 0x0;
+    this.positionY = 0x02000 / 0x100;
     this.velocityY = 0x0;
-    this.context = context;
     this.controls = new Controls(this);
     this.animationCounter = 1;
   }
@@ -83,6 +81,19 @@ class Player {
         this.velocityX = 0;
       else
         this.velocityX += 0x000D0 / 0x100;
+  }
+
+  isGrounded(obstacles: Array<any>): boolean {
+    const x1 = Math.floor(this.positionX / 16);
+    const x2 = Math.floor(this.positionX / 16) + 1;
+    const y = Math.floor(this.positionY / 16);
+    // console.log("x1:", x1, "x2", x2, "y:", y);
+
+    obstacles = obstacles.filter((block: any) => (block.x == x1 || block.x == x2) && block.y == y - 1);
+    const grounded = (obstacles.length > 0) ? true : false;
+    console.log(grounded);
+
+    return grounded;
   }
 }
 
