@@ -48,7 +48,9 @@ class Level {
     this.camera.drawCastle(this.castle.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - this.castle.y * 16);
   }
 
-  renderPlayer(x: number, y: number) {
+  renderPlayer() {
+    let x = this.player.positionX - this.camera.position;
+    let y = 0x0E000 / 0x100 - this.player.positionY;
     let texture: marioTexture;
     if (!this.player.grounded)
       texture = "jumping";
@@ -59,34 +61,37 @@ class Level {
   }
 
   updatePlayer() {
+    // detect collision
+    this.player.handleCollision(this.levelData.blocks);
+
     // update player position
     this.player.positionX += this.player.speedX;
     this.player.positionY += this.player.speedY;
 
     this.player.gravity(this.player.controls.flags.space);
 
-    if (this.player.positionY <= 0x02000 / 0x100) {
-      this.player.speedY = 0x0;
-      this.player.positionY = 0x02000 / 0x100;
-      this.player.grounded = true;
-    }
-
     if (this.player.positionX < this.camera.position)
       this.player.positionX = this.camera.position;
 
-    // update if player is grounded
-    this.player.grounded = this.player.isGrounded(this.levelData.blocks);
-    const result = this.player.isInBlock(this.levelData.blocks);
-    if (result.isIn) {
-      console.log(this.player.positionX, result.correction!.x, this.player.positionX + result.correction!.x);
-      this.player.positionX += result.correction!.x;
-      this.player.positionY += result.correction!.y;
-      this.camera.updateCamera(0);
-    } else {
-      this.updateCamera();
-    }
+    // this.updateCamera();
 
-    this.renderPlayer(this.player.positionX - this.camera.position, 0x0E000 / 0x100 - this.player.positionY);
+    // console.log(this.player.positionX / 16, this.player.speedX, this.player.positionY / 16, this.player.speedY, this.player.grounded);
+
+    this.checkForFinish();
+
+    this.renderPlayer();
+  }
+
+  checkForFinish() {
+    // console.log(this.player.positionX / 16);
+    if (this.player.positionX / 16 >= 197.5) {
+      this.player.controls.disabled = true;
+      this.player.speedX = 0x000000000000000001;
+
+      if (this.player.positionX / 16 <= 204 && this.player.grounded) {
+        this.player.positionX += 0x00130 / 0x100;
+      } else this.player.speedX = 0;
+    }
   }
 }
 

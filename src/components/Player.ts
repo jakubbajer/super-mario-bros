@@ -34,6 +34,7 @@ class Player {
     this.animationCounter = 1;
     this.facing = "right";
     this.controls = new Controls(this);
+    // this.controls.clear();
   }
 
   accelerate(right: boolean, run: boolean) {
@@ -91,57 +92,103 @@ class Player {
   }
 
   jump() {
-    this.jumpStartSpeedX = Math.abs(this.speedX);
-    this.grounded = false;
+    if (this.grounded) {
+      this.jumpStartSpeedX = Math.abs(this.speedX);
+      this.grounded = false;
 
-    if (this.jumpStartSpeedX <= 0x024FF / 0x100)
-      this.speedY = 0x00400 / 0x100;
-    else
-      this.speedY = 0x00500 / 0x100;
+      if (this.jumpStartSpeedX <= 0x0025E / 0x100)
+        this.speedY = 0x00400 / 0x100;
+      else
+        this.speedY = 0x00500 / 0x100;
 
-    this.lastSpeedY = this.speedY;
+      this.lastSpeedY = this.speedY;
+    }
   }
 
   gravity(jumpHeld: boolean) {
     if (jumpHeld && this.speedY >= 0) {
-      if (this.jumpStartSpeedX! < 0x01000 / 0x100)
+      if (this.jumpStartSpeedX! < 0x00100 / 0x100)
         this.speedY -= 0x0020 / 0x100;
-      else if (this.jumpStartSpeedX! >= 0x01000 / 0x100 && this.jumpStartSpeedX! <= 0x024FF / 0x100)
+      else if (this.jumpStartSpeedX! >= 0x00100 / 0x100 && this.jumpStartSpeedX! <= 0x024FF / 0x100)
         this.speedY -= 0x0001E / 0x100;
-      else if (this.jumpStartSpeedX! > 0x024FF)
+      else if (this.jumpStartSpeedX! > 0x0025E)
         this.speedY -= 0x00028 / 0x100;
     } else {
-      if (this.jumpStartSpeedX! < 0x01000 / 0x100)
+      if (this.jumpStartSpeedX! < 0x00100 / 0x100)
         this.speedY -= 0x00070 / 0x100;
-      else if (this.jumpStartSpeedX! >= 0x01000 / 0x100 && this.jumpStartSpeedX! <= 0x024FF / 0x100)
+      else if (this.jumpStartSpeedX! >= 0x00100 / 0x100 && this.jumpStartSpeedX! <= 0x024FF / 0x100)
         this.speedY -= 0x00060 / 0x100;
-      else if (this.jumpStartSpeedX! > 0x024FF)
+      else if (this.jumpStartSpeedX! > 0x0025E)
         this.speedY -= 0x00090 / 0x100;
     }
-    if (this.speedY < -0x04800 / 0x100)
-      this.speedY = 0x04000 / 0x100;
+    if (this.speedY < -0x00480 / 0x100)
+      this.speedY = -0x00400 / 0x100;
 
-    console.log("y speed: ", this.speedY.toString(16));
+    // console.log("y speed: ", this.speedY.toString(16));
   }
 
-  isGrounded(obstacles: Array<any>): boolean {
-    // left side of mario
-    const x1 = Math.floor(this.positionX / 16);
-    // right side of mario
-    const x2 = Math.floor(this.positionX / 16) + 1;
+  handleCollision(obstacles: Array<any>) {
+    if (this.speedX >= 0) {
+      let rightSide = this.positionX + this.speedX + 16;
+      let y = this.positionY;
+      let topY = this.positionY + 16;
 
-    // mario's y coordinate in blocks - 1 pixel (1/16 of a block)
-    const y = (this.positionY - (0x00100 / 0x100)) / 16;
+      let toRight = obstacles.filter((block: any) => {
+        return block.x == Math.floor(rightSide / 16) && (block.y == Math.floor(y / 16) || block.y == Math.floor(topY / 16));
+      });
 
-    obstacles = obstacles.filter((block: any) => (block.x == x1 || block.x == x2) && block.y == Math.floor(y));
-    let grounded = (obstacles.length > 0) ? true : false;
-    // console.log(grounded);
-    // console.info("x1:", x1, "x2", x2, "exact y:", y, "y of block to check:", Math.floor(y), "grounded:", grounded);
+      if (toRight.length > 0) {
+        this.speedX = 0;
+      }
+    } else {
+      let leftSide = this.positionX + this.speedX;
+      let y = this.positionY;
+      let topY = this.positionY + 16;
 
-    return grounded;
+      let toLeft = obstacles.filter((block: any) => {
+        return block.x == Math.floor(leftSide / 16) && (block.y == Math.floor(y / 16) || block.y == Math.floor(topY / 16));
+      });
+
+      if (toLeft.length > 0) {
+        this.speedX = 0;
+      }
+    }
+
+    if (this.speedY <= 0) {
+      let blc = { x: this.positionX + this.speedX, y: this.positionY + this.speedY };
+      let brc = { x: this.positionX + this.speedX + 16, y: this.positionY + this.speedY };
+
+      let below = obstacles.filter((block: any) => {
+        let x = block.x;
+        let x1 = block.x + 1;
+
+        return ((blc.x / 16 > x && blc.x / 16 < x1) || (brc.x / 16 > x && brc.x / 16 < x1)) && (Math.floor(blc.y / 16) == block.y);
+      });
+
+      // console.log(below);
+
+      if (below.length > 0) {
+        this.speedY = 0;
+        this.grounded = true;
+      } // else this.grounded = false;
+    } else {
+      let tlc = { x: this.positionX + this.speedX, y: this.positionY + this.speedY + 16 };
+      let trc = { x: this.positionX + this.speedX + 16, y: this.positionY + this.speedY + 16 };
+
+      let abowe = obstacles.filter((block: any) => {
+        let x = block.x;
+        let x1 = block.x + 1;
+
+        return ((tlc.x / 16 > x && tlc.x / 16 < x1) || (trc.x / 16 > x && trc.x / 16 < x1)) && Math.ceil(tlc.y / 16) - 1 == block.y;
+      });
+
+      if (abowe.length > 0) {
+        this.speedY = 0;
+      }
+    }
   }
 
-  isInBlock(obstacles: Array<any>): { isIn: boolean, correction?: { x: number, y: number; }; } {
+  isInBlockHorizontal(obstacles: Array<any>): { isIn: boolean, x?: number; } {
     // exact side (depending on his direction) of mario in blocks
     const exactX = ((this.speedX >= 0) ? this.positionX + 0x01000 / 0x100 : this.positionX) / 16;
     const wholeX = Math.floor(exactX);
@@ -150,11 +197,10 @@ class Player {
     // exact mario's y coordinate in blocks
     const y = (this.positionY) / 16;
 
-
     const [block] = obstacles = obstacles.filter((block: any) => block.x == wholeX && block.y == Math.floor(y));
     // console.log("whole x:", wholeX, "y:", y, "block:", block);
 
-    if (block) return { isIn: true, correction: { x: ((this.speedX >= 0) ? -remainder : 1 - remainder) * 16, y: 0 } };
+    if (block) return { isIn: true, x: ((this.speedX >= 0) ? -remainder : 1 - remainder) * 16 };
     else return { isIn: false };
   }
 }

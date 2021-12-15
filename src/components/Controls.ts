@@ -4,18 +4,21 @@ class Controls {
   player: Player;
   flags: Flags;
   counter: number;
+  disabled: boolean;
 
   constructor(player: Player) {
     this.player = player;
     this.counter = 0;
+    this.disabled = false;
+
     this.flags = {
       arrowRight: false,
       arrowLeft: false,
       shift: false,
       space: false
     };
-    window.addEventListener("keydown", e => this.handleDown(e));
-    window.addEventListener("keyup", e => this.handleUp(e));
+    window.addEventListener("keydown", e => this.handleDown(e), true);
+    window.addEventListener("keyup", e => this.handleUp(e), true);
   }
 
   handleDown(event: KeyboardEvent) {
@@ -65,7 +68,7 @@ class Controls {
   // handles the input every third frame, roughly at 20Hz,
   // which is about the speed NES handles input
   executeFlags() {
-    if (this.counter == 3) {
+    if (this.counter == 3 && !this.disabled) {
       if (this.flags.arrowRight && !(this.flags.arrowRight && this.flags.arrowLeft)) {
         this.player.facing = "right";
         this.player.accelerate(true, this.flags.shift);

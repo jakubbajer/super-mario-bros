@@ -26,7 +26,9 @@ class Game {
   update = () => {
     this.level.player.controls.executeFlags(); // triggers input
     this.level.updatePlayer();
+    this.level.updateCamera();
     this.level.renderBlocks();
+    this.level.renderPlayer();
   };
 }
 
