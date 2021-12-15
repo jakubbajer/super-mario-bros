@@ -29,7 +29,7 @@ class Level {
     this.controls = new Controls(this.player);
   }
 
-  updatePlayer() {
+  updateCamera() {
     // update player and Camera
     if (this.camera.position + 0x03000 / 0x100 > this.player.positionX)
       this.camera.updateCamera(0);
@@ -37,16 +37,6 @@ class Level {
       this.camera.updateCamera(this.player.velocityX / 2);
     else
       this.camera.updateCamera(this.player.velocityX);
-
-    // update player position
-    this.player.positionX += this.player.velocityX;
-    if (this.player.positionX < this.camera.position)
-      this.player.positionX = this.camera.position;
-
-    // update if player is grounded
-    this.player.grounded = this.player.isGrounded(this.levelData.blocks);
-
-    this.renderMario(this.player.positionX - this.camera.position, 0x0E000 / 0x100 - this.player.positionY);
   }
 
   renderBlocks() {
@@ -60,7 +50,7 @@ class Level {
     this.camera.drawCastle(this.castle.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - this.castle.y * 16);
   }
 
-  renderMario(x: number, y: number) {
+  renderPlayer(x: number, y: number) {
     let texture: marioTexture;
     if (!this.player.grounded)
       texture = "jumping";
@@ -68,6 +58,18 @@ class Level {
       texture = (this.player.velocityX != 0) ? "running" : "standing";
     this.camera.drawSprite(...Textures.getMario(texture, Math.floor(this.player.animationCounter / 6) + 1), x, y, 16, 16, this.player.facing === "left");
     this.player.animationCounter = (this.player.animationCounter + 1) % 18 + 1;
+  }
+
+  updatePlayer() {
+    // update player position
+    this.player.positionX += this.player.velocityX;
+    if (this.player.positionX < this.camera.position)
+      this.player.positionX = this.camera.position;
+
+    // update if player is grounded
+    this.player.grounded = this.player.isGrounded(this.levelData.blocks);
+
+    this.renderPlayer(this.player.positionX - this.camera.position, 0x0E000 / 0x100 - this.player.positionY);
   }
 }
 
