@@ -172,7 +172,7 @@ class Player {
       if (below.length > 0) {
         this.speedY = 0;
         this.grounded = true;
-        this.jumpStartSpeedX = undefined;
+        // this.jumpStartSpeedX = undefined;
       } // else this.grounded = false;
     } else {
       let tlc = { x: this.positionX + this.speedX, y: this.positionY + this.speedY + 16 * this.size };
