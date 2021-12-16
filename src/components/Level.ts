@@ -56,7 +56,7 @@ class Level {
       texture = "jumping";
     else
       texture = (this.player.speedX != 0) ? "running" : "standing";
-    this.camera.drawSprite(...Textures.getMario(texture, Math.floor(this.player.animationCounter / 6) + 1), x, y, 16, 16, this.player.facing === "left");
+    this.camera.drawSprite(...Textures.getMario(texture, this.player.size, Math.floor(this.player.animationCounter / 6) + 1), x, y - (this.player.size - 1) * 16, 16, 16 * this.player.size, this.player.facing === "left");
     this.player.animationCounter = (this.player.animationCounter + 1) % 18 + 1;
   }
 

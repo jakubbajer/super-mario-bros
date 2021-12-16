@@ -19,6 +19,7 @@ class Player {
   speedY: number;
   lastSpeedY: number;
   jumpStartSpeedX?: number;
+  size: number;
   grounded: boolean;
   animationCounter: number;
   facing: "left" | "right";
@@ -31,6 +32,7 @@ class Player {
     this.speedY = 0x0;
     this.lastSpeedY = 0x0;
     this.grounded = true;
+    this.size = 2;
     this.animationCounter = 1;
     this.facing = "right";
     this.controls = new Controls(this);
@@ -170,10 +172,11 @@ class Player {
       if (below.length > 0) {
         this.speedY = 0;
         this.grounded = true;
+        this.jumpStartSpeedX = undefined;
       } // else this.grounded = false;
     } else {
-      let tlc = { x: this.positionX + this.speedX, y: this.positionY + this.speedY + 16 };
-      let trc = { x: this.positionX + this.speedX + 16, y: this.positionY + this.speedY + 16 };
+      let tlc = { x: this.positionX + this.speedX, y: this.positionY + this.speedY + 16 * this.size };
+      let trc = { x: this.positionX + this.speedX + 16, y: this.positionY + this.speedY + 16 * this.size };
 
       let abowe = obstacles.filter((block: any) => {
         let x = block.x;
