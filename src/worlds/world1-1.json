@@ -409,7 +409,7 @@
     { "type": "Floor", "x": 210, "y": 0 },
     { "type": "Floor", "x": 210, "y": 1 },
 
-    { "type": "Block", "x": 16, "y": 5 },
+    { "type": "Block", "x": 16, "y": 5, "contents": [ "1up" ] },
     { "type": "Brick", "x": 20, "y": 5 },
     { "type": "Block", "x": 21, "y": 5 },
     { "type": "Brick", "x": 22, "y": 5 },
@@ -448,7 +448,7 @@
     { "type": "Pipe", "x": 58, "y": 5, "top": true },
 
     { "type": "Brick", "x": 77, "y": 5 },
-    { "type": "Block", "x": 78, "y": 5 },
+    { "type": "Block", "x": 78, "y": 5, "contents": [ "1up" ] },
     { "type": "Brick", "x": 79, "y": 5 },
 
     { "type": "Brick", "x": 80, "y": 9 },
@@ -601,6 +601,11 @@
   "enemies": [
     { "type": "goomba", "x": 24, "y": 2 },
     { "type": "goomba", "x": 35, "y": 2 },
-    { "type": "goomba", "x": 37, "y": 2 }
+    { "type": "goomba", "x": 37, "y": 2 },
+    { "type": "goomba", "x": 56, "y": 2 },
+    { "type": "goomba", "x": 126, "y": 2 },
+    { "type": "goomba", "x": 130, "y": 2 },
+    { "type": "goomba", "x": 172, "y": 2 },
+    { "type": "goomba", "x": 176, "y": 2 }
   ]
 }

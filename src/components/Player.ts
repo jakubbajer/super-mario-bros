@@ -18,6 +18,7 @@ import bump from "/assets/sounds/Bump.wav";
 import squish from "/assets/sounds/Squish.wav";
 import theme from "/assets/sounds/theme.mp3";
 import jump from "/assets/sounds/Jump.wav";
+import oneUp from "/assets/sounds/1up.wav";
 
 class Player {
   audioPlayer: AudioPlayer;
@@ -45,7 +46,7 @@ class Player {
     this.speedY = 0x0;
     this.lastSpeedY = 0x0;
     this.grounded = true;
-    this.size = 2;
+    this.size = 1;
     this.animationCounter = 1;
     this.facing = "right";
     this.controls = new Controls(this);
@@ -107,18 +108,16 @@ class Player {
   }
 
   jump() {
-    if (this.grounded) {
-      AudioPlayer.playAudio(jump);
-      this.jumpStartSpeedX = Math.abs(this.speedX);
-      this.grounded = false;
+    AudioPlayer.playAudio(jump);
+    this.jumpStartSpeedX = Math.abs(this.speedX);
+    this.grounded = false;
 
-      if (this.jumpStartSpeedX <= 0x0025E / 0x100)
-        this.speedY = 0x00400 / 0x100;
-      else
-        this.speedY = 0x00500 / 0x100;
+    if (this.jumpStartSpeedX <= 0x0025E / 0x100)
+      this.speedY = 0x00400 / 0x100;
+    else
+      this.speedY = 0x00500 / 0x100;
 
-      this.lastSpeedY = this.speedY;
-    }
+    this.lastSpeedY = this.speedY;
   }
 
   gravity(jumpHeld: boolean) {
@@ -143,7 +142,7 @@ class Player {
     // console.log("y speed: ", this.speedY.toString(16));
   }
 
-  handleCollision(obstacles: Array<any>) {
+  handleCollision(obstacles: Array<any>, enemies: Array<any>) {
     if (this.speedX >= 0) {
       let rightSide = this.positionX + this.speedX + 16;
       let y = this.positionY;
@@ -176,7 +175,7 @@ class Player {
 
       let below = obstacles.filter((block: any) => {
         let x = block.x;
-        let x1 = block.x + 1;
+        let x1 = block.x + 17 / 16;
 
         return ((blc.x / 16 > x && blc.x / 16 < x1) || (brc.x / 16 > x && brc.x / 16 < x1)) && (Math.floor(blc.y / 16) == block.y);
       });
@@ -201,13 +200,26 @@ class Player {
 
       if (abowe.length > 0) {
         AudioPlayer.playAudio(bump);
+        let index;
+        abowe.forEach((block: any) => {
+          index = obstacles.findIndex((obstacle: any) => obstacle == block && block.type == "Block");
+        });
+
+        if (index != undefined && index != -1) {
+          if (obstacles[index].contents) {
+            let object = obstacles[index].contents.shift();
+
+            enemies.push(new Enemy(obstacles[index].x, obstacles[index].y + 1, object));
+          }
+          obstacles[index].type = "Empty";
+        }
         this.speedY = 0;
       }
     }
   }
 
   handleEnemyCollision(enemies: Array<Enemy>) {
-    enemies.forEach((enemy) => {
+    enemies.filter(enemy => !enemy.dead).forEach((enemy) => {
       let x = enemy.x;
       let x1 = x + 16;
 
@@ -217,19 +229,32 @@ class Player {
         (this.positionX + this.speedX + 16 >= x && this.positionX + this.speedX + 16 <= x1))
         && Math.floor(enemy.y / 16) == Math.floor((this.positionY + this.speedY) / 16);
 
-      if (intersecting && !this.invincible)
-        this.hit();
+      if (intersecting && !this.invincible) {
+        if (this.speedY > -1) {
+          if (enemy.type == "1up")
+            enemy.dead = true;
+          this.hit(enemy.type);
+        } else {
+          this.jump();
+          enemy.dead = true;
+        }
+      }
     });
   }
 
-  hit() {
-    AudioPlayer.playAudio(squish);
-    this.invincible = true;
-    setTimeout(() => { this.invincible = false; }, 1000);
-    if (this.size == 2) {
-      this.size = 1;
-    } else if (this.size == 1) {
-      this.die();
+  hit(type: "goomba" | "1up") {
+    if (type == "goomba") {
+      AudioPlayer.playAudio(squish);
+      this.invincible = true;
+      setTimeout(() => { this.invincible = false; }, 1000);
+      if (this.size == 2) {
+        this.size = 1;
+      } else if (this.size == 1) {
+        this.die();
+      }
+    } else {
+      AudioPlayer.playAudio(oneUp);
+      this.size = 2;
     }
   }
 

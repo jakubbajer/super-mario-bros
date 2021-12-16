@@ -1,5 +1,5 @@
 type marioTexture = "standing" | "running" | "jumping" | "dying";
-type blockTexture = "Block" | "Brick" | "Stone" | "Floor" | "Pipe";
+type blockTexture = "Block" | "Brick" | "Stone" | "Floor" | "Pipe" | "Empty";
 
 class Textures {
   static getMario(type: marioTexture, size: number, frame?: number): [number, number, number, number] {
@@ -32,6 +32,8 @@ class Textures {
 
   static getBlocks(type: blockTexture, pipeTop?: boolean, pipeLeft?: boolean): [number, number] {
     switch (type) {
+      case "Empty":
+        return [349, 78];
       case "Block":
         return [298, 78];
       case "Brick":

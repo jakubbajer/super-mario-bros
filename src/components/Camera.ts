@@ -2,6 +2,7 @@ import mario from "/assets/images/mario.png";
 import tiles from "/assets/images/tiles.png";
 import background from "/assets/images/world1-1-bg.png";
 import enemies from "/assets/images/enemies.png";
+import objects from "/assets/images/objects.png";
 
 class Camera {
   context: CanvasRenderingContext2D;
@@ -9,6 +10,7 @@ class Camera {
   tiles: HTMLImageElement;
   background: HTMLImageElement;
   enemies: HTMLImageElement;
+  objects: HTMLImageElement;
   position: number;
 
   constructor(ctx: CanvasRenderingContext2D) {
@@ -22,6 +24,8 @@ class Camera {
     this.background.src = background;
     this.enemies = new Image();
     this.enemies.src = enemies;
+    this.objects = new Image();
+    this.objects.src = objects;
   };
 
   updateCamera(speed: number) {
@@ -50,7 +54,13 @@ class Camera {
     this.context.drawImage(this.tiles, sx, sy, 16, 16, dx, dy, 16, 16);
   }
 
-  drawPole(dx: number, dy: number) {
+  drawPole(dx: number, dy: number, cameraY: number) {
+    this.context.beginPath();
+    this.context.moveTo(dx + 8, cameraY + 8);
+    this.context.lineTo(dx - 24, cameraY + 16);
+    this.context.lineTo(dx + 8, cameraY + 24);
+    this.context.fillStyle = "#fff";
+    this.context.fill();
     this.context.drawImage(this.tiles, 0, 588, 15, 160, dx, dy, 16, 160);
   }
 
@@ -58,8 +68,11 @@ class Camera {
     this.context.drawImage(this.tiles, 24, 684, 80, 80, dx, dy, 80, 80);
   }
 
-  drawEnemy(dx: number, dy: number, frame: number) {
-    this.context.drawImage(this.enemies, 1 + (17 * (frame - 1)), 28, 16, 16, dx, dy, 16, 16);
+  drawEnemy(type: "goomba" | "1up", dx: number, dy: number, frame: number) {
+    if (type == "goomba")
+      this.context.drawImage(this.enemies, 1 + (17 * (frame - 1)), 28, 16, 16, dx, dy, 16, 16);
+    else if (type == "1up")
+      this.context.drawImage(this.objects, 0, 8, 16, 16, dx, dy, 16, 16);
   }
 }
 

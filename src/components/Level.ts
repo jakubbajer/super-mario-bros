@@ -20,8 +20,10 @@ class Level {
   levelData: any;
   pole: any;
   castle: any;
+  flagY: number;
 
   constructor(levelId: number, canvas: HTMLCanvasElement) {
+    this.flagY = 0x03000 / 0x100;
     this.finished = false;
     this.levelData = level1Data;
     this.enemies = this.levelData.enemies.map((enemyData: any) => {
@@ -54,7 +56,7 @@ class Level {
       else
         this.camera.drawBlock(...Textures.getBlocks(block.type), block.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - block.y * 16);
     });
-    this.camera.drawPole(this.pole.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - this.pole.y * 16);
+    this.camera.drawPole(this.pole.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - this.pole.y * 16, this.flagY);
     this.camera.drawCastle(this.castle.x * 16 - Math.round(this.camera.position), 0x0E000 / 0x100 - this.castle.y * 16);
   }
 
@@ -78,7 +80,7 @@ class Level {
 
     // detect collision
     if (!this.player.controls.disabled) {
-      this.player.handleCollision(this.levelData.blocks);
+      this.player.handleCollision(this.levelData.blocks, this.enemies);
       this.player.handleEnemyCollision(this.enemies);
     }
 
@@ -111,6 +113,8 @@ class Level {
       this.player.speedX = 0x000000000000001;
 
       if (this.player.positionX / 16 <= 204) {
+        this.player.speedY = 0;
+        this.flagY = (this.flagY > 0x0B000 / 0x100) ? 0x0B000 / 0x100 : this.flagY + 0x00400 / 0x100;
         this.player.positionX += 0x00130 / 0x100;
         this.player.positionY = 0x02000 / 0x100;
         if (this.player.positionY < 0x02000 / 0x100) {
@@ -132,6 +136,8 @@ class Level {
         enemy.spawned = Math.abs((this.player.positionX - enemy.x) / 16) <= 16;
       else if (!enemy.dead) {
         let targetX = enemy.x + enemy.speedX;
+        let targetY = enemy.y + enemy.speedY;
+
         if (enemy.speedX < 0) {
           if (!this.levelData.blocks.some((block: any) => block.x == Math.floor(targetX / 16) && block.y == Math.floor(enemy.y / 16)))
             enemy.x = targetX;
@@ -145,13 +151,27 @@ class Level {
           enemy.x -= enemy.speedX;
           enemy.speedX *= -1;
         }
+
+        const x1 = Math.floor(enemy.x / 16);
+        const x2 = Math.floor(enemy.x / 16) + 1;
+        const y = Math.floor(enemy.y / 16);
+        // console.log("x1:", x1, "x2", x2, "y:", y);
+
+        let obstacles = this.levelData.blocks.filter((block: any) => (block.x == x1 || block.x == x2) && block.y == y - 1);
+        const grounded = (obstacles.length > 0) ? true : false;
+        if (!grounded) {
+          enemy.y = targetY;
+        } else {
+          enemy.y = Math.floor(enemy.y / 16) * 16;
+        }
+
         this.renderEnemy(enemy);
       }
     });
   }
 
   renderEnemy(enemy: Enemy) {
-    this.camera.drawEnemy(enemy.x - Math.round(this.camera.position), 0x0E000 / 0x100 - enemy.y, Math.floor(this.player.animationCounter / 9) + 1);
+    this.camera.drawEnemy(enemy.type, enemy.x - Math.round(this.camera.position), 0x0E000 / 0x100 - enemy.y, Math.floor(this.player.animationCounter / 9) + 1);
   }
 }
 

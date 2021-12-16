@@ -3,7 +3,7 @@ class AudioPlayer {
 
   constructor(themePath: any) {
     this.theme = new Audio(themePath);
-    this.theme.volume = 0.1;
+    this.theme.volume = 0.05;
     this.theme.play();
     this.theme.onended = () => {
       this.theme.play();
