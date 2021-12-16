@@ -1,6 +1,5 @@
 import AudioPlayer from "./AudioPlayer";
 import Level from "./Level";
-import theme from "/assets/sounds/theme.mp3";
 import FpsController from "./FpsController";
 
 class Game {
@@ -16,7 +15,6 @@ class Game {
   }
 
   init() {
-    // AudioPlayer.playAudio(theme, true);
     this.fpsController.start();
   }
 
@@ -28,6 +26,7 @@ class Game {
     this.level.updatePlayer();
     this.level.updateCamera();
     this.level.renderBlocks();
+    this.level.updateEnemies();
     this.level.renderPlayer();
   };
 }

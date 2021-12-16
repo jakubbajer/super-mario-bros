@@ -10,9 +10,17 @@
 // max walk speed (level entry) - 0x00D00
 // skid turnaround speed - 0x00900
 
+import AudioPlayer from "./AudioPlayer";
 import Controls from "./Controls";
+import Enemy from "./Enemy";
+import die from "/assets/sounds/Die.wav";
+import bump from "/assets/sounds/Bump.wav";
+import squish from "/assets/sounds/Squish.wav";
+import theme from "/assets/sounds/theme.mp3";
+import jump from "/assets/sounds/Jump.wav";
 
 class Player {
+  audioPlayer: AudioPlayer;
   positionX: number;
   speedX: number;
   positionY: number;
@@ -20,12 +28,17 @@ class Player {
   lastSpeedY: number;
   jumpStartSpeedX?: number;
   size: number;
+  invincible: boolean;
   grounded: boolean;
   animationCounter: number;
   facing: "left" | "right";
   controls: Controls;
+  dead: boolean;
 
   constructor() {
+    this.audioPlayer = new AudioPlayer(theme);
+    this.dead = false;
+    this.invincible = false;
     this.positionX = 0x03000 / 0x100;
     this.speedX = 0x0;
     this.positionY = 0x02000 / 0x100;
@@ -95,6 +108,7 @@ class Player {
 
   jump() {
     if (this.grounded) {
+      AudioPlayer.playAudio(jump);
       this.jumpStartSpeedX = Math.abs(this.speedX);
       this.grounded = false;
 
@@ -186,8 +200,54 @@ class Player {
       });
 
       if (abowe.length > 0) {
+        AudioPlayer.playAudio(bump);
         this.speedY = 0;
       }
+    }
+  }
+
+  handleEnemyCollision(enemies: Array<Enemy>) {
+    enemies.forEach((enemy) => {
+      let x = enemy.x;
+      let x1 = x + 16;
+
+      // console.log(enemy.y / 16, (this.positionY + this.speedY) / 16);
+
+      let intersecting = ((this.positionX + this.speedX >= x && this.positionX + this.speedX <= x1) ||
+        (this.positionX + this.speedX + 16 >= x && this.positionX + this.speedX + 16 <= x1))
+        && Math.floor(enemy.y / 16) == Math.floor((this.positionY + this.speedY) / 16);
+
+      if (intersecting && !this.invincible)
+        this.hit();
+    });
+  }
+
+  hit() {
+    AudioPlayer.playAudio(squish);
+    this.invincible = true;
+    setTimeout(() => { this.invincible = false; }, 1000);
+    if (this.size == 2) {
+      this.size = 1;
+    } else if (this.size == 1) {
+      this.die();
+    }
+  }
+
+  die() {
+    if (!this.dead) {
+      this.audioPlayer.theme.pause();
+      AudioPlayer.playAudio(die);
+      this.dead = true;
+      this.controls.disabled = true;
+      this.speedX = 0;
+      this.speedY = 0x00500 / 0x100;
+
+      setTimeout(() => {
+        this.speedY = - 0x00500 / 0x100;
+        setTimeout(() => {
+          document.getElementById("lost")!.style.display = "flex";
+        }, 700);
+      }, 200);
     }
   }
 

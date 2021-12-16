@@ -598,5 +598,9 @@
     { "type": "Stone", "x": 198, "y": 2 }
     
   ],
-  "enemies": []
+  "enemies": [
+    { "type": "goomba", "x": 24, "y": 2 },
+    { "type": "goomba", "x": 35, "y": 2 },
+    { "type": "goomba", "x": 37, "y": 2 }
+  ]
 }

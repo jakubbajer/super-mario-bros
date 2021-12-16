@@ -1,12 +1,14 @@
 import mario from "/assets/images/mario.png";
 import tiles from "/assets/images/tiles.png";
 import background from "/assets/images/world1-1-bg.png";
+import enemies from "/assets/images/enemies.png";
 
 class Camera {
   context: CanvasRenderingContext2D;
   mario: HTMLImageElement;
   tiles: HTMLImageElement;
   background: HTMLImageElement;
+  enemies: HTMLImageElement;
   position: number;
 
   constructor(ctx: CanvasRenderingContext2D) {
@@ -18,6 +20,8 @@ class Camera {
     this.tiles.src = tiles;
     this.background = new Image();
     this.background.src = background;
+    this.enemies = new Image();
+    this.enemies.src = enemies;
   };
 
   updateCamera(speed: number) {
@@ -52,6 +56,10 @@ class Camera {
 
   drawCastle(dx: number, dy: number) {
     this.context.drawImage(this.tiles, 24, 684, 80, 80, dx, dy, 80, 80);
+  }
+
+  drawEnemy(dx: number, dy: number, frame: number) {
+    this.context.drawImage(this.enemies, 1 + (17 * (frame - 1)), 28, 16, 16, dx, dy, 16, 16);
   }
 }
 
